@@ -1,0 +1,25 @@
+{
+  "name": "test-splitting",
+  "version": "1.0.0",
+  "description": "Testing circle ci test splitting",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jrthib/test-splitting.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jrthib/test-splitting/issues"
+  },
+  "homepage": "https://github.com/jrthib/test-splitting#readme",
+  "devDependencies": {
+    "jest": "^24.9.0"
+  },
+  "jest": {
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$"
+  }
+}
