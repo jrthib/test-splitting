@@ -33,5 +33,9 @@ jobs:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
 
+      - run:
+          command: |
+            echo ${CIRCLE_COMPARE_URL}
+
       # run tests!
       - run: npm test
