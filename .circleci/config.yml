@@ -45,8 +45,15 @@ jobs:
             services=$(echo $changed_files | tr ' ' '\n' | grep -oE "^src\/services\/(.*)/" || true)
             services_affected=$(echo $services | awk "{print length}")
 
+            echo $changed_files
+            echo ${#services_affected}
+            echo ${#common_models_affected}
+            echo ${#others_affected}
+
             if [ ${#services_affected} -gt 0 ] && [ ${#common_models_affected} -eq 0 ] && [ ${#others_affected} -eq 0 ]; then
-                npm test -- $services
+              echo "running partial suite"
+              npm test -- $services
             else
-                npm test
+              echo "running full suite"
+              npm test
             fi
