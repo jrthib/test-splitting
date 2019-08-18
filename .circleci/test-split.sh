@@ -1,7 +1,7 @@
 #!/bin/sh
 
 target_branch='master'
-CIRCLE_BRANCH='edit-service-2-2'
+CIRCLE_BRANCH='edit-service-2-3'
 
 changed_files=$(git diff --name-only $target_branch..$CIRCLE_BRANCH)
 
@@ -10,11 +10,16 @@ common_models_files=$(echo $changed_files | tr ' ' '\n' | grep -oE "^src\/servic
 common_models_affected=$(echo $common_models_files | awk "{print length}")
 others_files=$(echo $changed_files | tr ' ' '\n' | grep -v "^src\/services\/" || true)
 others_affected=$(echo $others_files | awk "{print length}")
-services_files=$(echo $changed_files | tr ' ' '\n' | grep -oE "^src\/services\/(.*)/" || true)
-services_affected=$(echo $services_files | awk "{print length}")
+service_files=$(echo $changed_files | tr ' ' '\n' | grep -oE "^src\/services\/(.*)/" || true)
+services_affected=$(echo $service_files | awk "{print length}")
+
+echo $service_files
+echo ${#services_affected}
+echo ${#common_models_affected}
+echo ${#others_affected}
 
 if [ ${#services_affected} -gt 1 ] && [ ${#common_models_affected} -eq 1 ] && [ ${#others_affected} -eq 1 ]; then
-    npm test -- $services
+    npm test -- $service_files
 else
     npm test
 fi
