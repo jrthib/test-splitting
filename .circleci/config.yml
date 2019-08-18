@@ -38,22 +38,16 @@ jobs:
             TARGET_BRANCH=master
             changed_files=$(git diff --name-only remotes/origin/$TARGET_BRANCH..$CIRCLE_BRANCH)
 
+            # If common, models, or other files are affected, run full tests
             common_models_files=$(echo $changed_files | tr ' ' '\n' | grep -oE "^src\/services\/(common|models)/" || true)
             common_models_affected=$(echo $common_models_files | awk "{print length}")
             others_files=$(echo $changed_files | tr ' ' '\n' | grep -v "^src\/services\/" || true)
             others_affected=$(echo $others_files | awk "{print length}")
-            services=$(echo $changed_files | tr ' ' '\n' | grep -oE "^src\/services\/(.*)/" || true)
-            services_affected=$(echo $services | awk "{print length}")
+            services_files=$(echo $changed_files | tr ' ' '\n' | grep -oE "^src\/services\/(.*)/" || true)
+            services_affected=$(echo $services_files | awk "{print length}")
 
-            echo $changed_files
-            echo ${#services_affected}
-            echo ${#common_models_affected}
-            echo ${#others_affected}
-
-            if [ ${#services_affected} -gt 0 ] && [ ${#common_models_affected} -eq 0 ] && [ ${#others_affected} -eq 0 ]; then
-              echo "running partial suite"
-              npm test -- $services
+            if [ ${#services_affected} -gt 1 ] && [ ${#common_models_affected} -eq 1 ] && [ ${#others_affected} -eq 1 ]; then
+                npm test -- $services
             else
-              echo "running full suite"
-              npm test
+                npm test
             fi
