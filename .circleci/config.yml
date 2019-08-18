@@ -36,20 +36,17 @@ jobs:
       - run:
           command: |
             TARGET_BRANCH=master
-            # git checkout -q $TARGET_BRANCH
-            # git reset --hard -q origin/$TARGET_BRANCH
-            # git checkout -q $CIRCLE_BRANCH
             changed_files=$(git diff --name-only remotes/origin/$TARGET_BRANCH..$CIRCLE_BRANCH)
 
-            common_models_affected=$(echo $changed_files | tr ' ' '\n' | grep -oE "^src\/services\/(common|models)/")
-            others_affected=$(echo $changed_files | tr ' ' '\n' | grep -v "^src\/services\/")
+            common_models_files=$(echo $changed_files | tr ' ' '\n' | grep -oE "^src\/services\/(common|models)/" || true)
+            common_models_affected=$(echo $common_models_files | awk "{print length}")
+            others_files=$(echo $changed_files | tr ' ' '\n' | grep -v "^src\/services\/" || true)
+            others_affected=$(echo $others_files | awk "{print length}")
+            services=$(echo $changed_files | tr ' ' '\n' | grep -oE "^src\/services\/(.*)/" || true)
+            services_affected=$(echo $services | awk "{print length}")
 
-            if [ -z "$common_models_affected" ] || [ -z "$others_affected" ]; then
-                services_affected=$(echo $changed_files | tr ' ' '\n' | grep -oE "^src\/services\/(.*)/")
-                echo $services_affected
-                echo "run partial suite"
-                npm test -- $services_affected
+            if [ ${#services_affected} -gt 0 ] && [ ${#common_models_affected} -eq 0 ] && [ ${#others_affected} -eq 0 ]; then
+                npm test -- $services
             else
-                echo "run full suite"
                 npm test
             fi
