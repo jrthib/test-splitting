@@ -3,5 +3,5 @@ exports.service = function service() {
 }
 
 exports.test = function test() {
-    return true;
+    return false;
 }
